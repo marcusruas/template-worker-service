@@ -1,4 +1,4 @@
-using WorkerTemplate;
+using WorkerTemplate.Workers;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>

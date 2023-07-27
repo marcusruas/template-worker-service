@@ -1,6 +1,6 @@
 using WorkerTemplate.SharedKernel.Handlers;
 
-namespace WorkerTemplate
+namespace WorkerTemplate.Workers
 {
     public class Worker : WorkerProcess
     {
