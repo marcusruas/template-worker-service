@@ -4,7 +4,7 @@ namespace WorkerTemplate
 {
     public class Worker : WorkerProcess
     {
-        public Worker(ILogger<Worker> logger) : base(logger) { }
+        public Worker(ILogger<Worker> logger, IConfiguration configuration) : base(logger, configuration) { }
 
         protected override async Task ExecuteProcess(CancellationToken stoppingToken)
         {
