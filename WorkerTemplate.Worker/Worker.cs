@@ -1,21 +1,15 @@
+using WorkerTemplate.SharedKernel.Handlers;
+
 namespace WorkerTemplate
 {
-    public class Worker : BackgroundService
+    public class Worker : WorkerProcess
     {
-        private readonly ILogger<Worker> _logger;
+        public Worker(ILogger<Worker> logger) : base(logger) { }
 
-        public Worker(ILogger<Worker> logger)
+        protected override async Task ExecuteProcess(CancellationToken stoppingToken)
         {
-            _logger = logger;
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
-            }
+            Logger.LogInformation($"Worker running at: {CurrentDate}");
+            await Task.Delay(1000, stoppingToken);
         }
     }
 }
