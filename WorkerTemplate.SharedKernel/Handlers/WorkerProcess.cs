@@ -19,7 +19,6 @@ namespace WorkerTemplate.SharedKernel.Handlers
         }
 
         public readonly ILogger<WorkerProcess> Logger;
-        public DateTime CurrentDate { get; private set; } = DateTime.UtcNow;
 
         private readonly string _workerName;
         private Schedule _workerSchedule;
@@ -33,16 +32,16 @@ namespace WorkerTemplate.SharedKernel.Handlers
 
                 try
                 {
-                    Logger.LogInformation(string.Format(KernelMessages.ProcessStarted, _workerName, CurrentDate));
+                    Logger.LogInformation(string.Format(KernelMessages.ProcessStarted, _workerName, DateTime.UtcNow));
                     await ExecuteProcess(stoppingToken);
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, string.Format(KernelMessages.ErrorAtProcess, _workerName, CurrentDate));
+                    Logger.LogError(ex, string.Format(KernelMessages.ErrorAtProcess, _workerName, DateTime.UtcNow));
                 }
                 finally
                 {
-                    Logger.LogInformation(string.Format(KernelMessages.ProcessEnded, _workerName, CurrentDate));
+                    Logger.LogInformation(string.Format(KernelMessages.ProcessEnded, _workerName, DateTime.UtcNow));
                 }
             }
         }
@@ -54,7 +53,7 @@ namespace WorkerTemplate.SharedKernel.Handlers
             if (!_workerSchedule.Enabled)
                 return false;
 
-            switch (CurrentDate.DayOfWeek)
+            switch (DateTime.UtcNow.DayOfWeek)
             {
                 case DayOfWeek.Monday:
                     return CurrentDateIsInHours(_workerSchedule.Monday);
@@ -76,6 +75,6 @@ namespace WorkerTemplate.SharedKernel.Handlers
         }
 
         private bool CurrentDateIsInHours(int[]? enabledHours)
-            => enabledHours != null && enabledHours.Length > 0 && enabledHours.Contains(CurrentDate.Hour);
+            => enabledHours != null && enabledHours.Length > 0 && enabledHours.Contains(DateTime.UtcNow.Hour);
     }
 }

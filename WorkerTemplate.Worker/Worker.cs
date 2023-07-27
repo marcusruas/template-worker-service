@@ -8,7 +8,7 @@ namespace WorkerTemplate
 
         protected override async Task ExecuteProcess(CancellationToken stoppingToken)
         {
-            Logger.LogInformation($"Worker running at: {CurrentDate}");
+            Logger.LogInformation($"Worker running at: {DateTime.UtcNow}");
             await Task.Delay(1000, stoppingToken);
         }
     }
