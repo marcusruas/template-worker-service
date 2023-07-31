@@ -14,14 +14,16 @@ namespace WorkerTemplate.SharedKernel.Handlers
         public WorkerProcess(ILogger<WorkerProcess> logger, IConfiguration configuration)
         {
             Logger = logger;
-            _workerName = GetType().Name;
-            _workerSchedule = configuration.GetSection($"Schedules:{_workerName}").Get<Schedule>();
+            WorkerName = GetType().Name;
+            WorkerSchedule = configuration.GetSection($"Schedules:{WorkerName}").Get<Schedule>();
+            LastTimeExecuted = DateTime.MinValue;
         }
 
         public readonly ILogger<WorkerProcess> Logger;
 
-        private readonly string _workerName;
-        private Schedule _workerSchedule;
+        private DateTime LastTimeExecuted;
+        private readonly string WorkerName;
+        private Schedule WorkerSchedule;
 
         protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -32,16 +34,17 @@ namespace WorkerTemplate.SharedKernel.Handlers
 
                 try
                 {
-                    Logger.LogInformation(string.Format(KernelMessages.ProcessStarted, _workerName, DateTime.UtcNow));
+                    Logger.LogInformation(string.Format(KernelMessages.ProcessStarted, WorkerName, DateTime.UtcNow));
                     await ExecuteProcess(stoppingToken);
+                    LastTimeExecuted = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, string.Format(KernelMessages.ErrorAtProcess, _workerName, DateTime.UtcNow));
+                    Logger.LogError(ex, string.Format(KernelMessages.ErrorAtProcess, WorkerName, DateTime.UtcNow));
                 }
                 finally
                 {
-                    Logger.LogInformation(string.Format(KernelMessages.ProcessEnded, _workerName, DateTime.UtcNow));
+                    Logger.LogInformation(string.Format(KernelMessages.ProcessEnded, WorkerName, DateTime.UtcNow));
                 }
             }
         }
@@ -50,25 +53,28 @@ namespace WorkerTemplate.SharedKernel.Handlers
 
         public bool CanRunAtTheMoment()
         {
-            if (!_workerSchedule.Enabled)
+            if (!WorkerSchedule.Enabled)
+                return false;
+
+            if (WorkerSchedule.RunOnlyOncePerHour && LastTimeExecuted.Date == DateTime.UtcNow.Date && LastTimeExecuted.Hour == DateTime.UtcNow.Hour)
                 return false;
 
             switch (DateTime.UtcNow.DayOfWeek)
             {
                 case DayOfWeek.Monday:
-                    return CurrentDateIsInHours(_workerSchedule.Monday);
+                    return CurrentDateIsInHours(WorkerSchedule.Monday);
                 case DayOfWeek.Tuesday:
-                    return CurrentDateIsInHours(_workerSchedule.Tuesday);
+                    return CurrentDateIsInHours(WorkerSchedule.Tuesday);
                 case DayOfWeek.Wednesday:
-                    return CurrentDateIsInHours(_workerSchedule.Wednesday);
+                    return CurrentDateIsInHours(WorkerSchedule.Wednesday);
                 case DayOfWeek.Thursday:
-                    return CurrentDateIsInHours(_workerSchedule.Thursday);
+                    return CurrentDateIsInHours(WorkerSchedule.Thursday);
                 case DayOfWeek.Friday:
-                    return CurrentDateIsInHours(_workerSchedule.Friday);
+                    return CurrentDateIsInHours(WorkerSchedule.Friday);
                 case DayOfWeek.Saturday:
-                    return CurrentDateIsInHours(_workerSchedule.SaturDay);
+                    return CurrentDateIsInHours(WorkerSchedule.SaturDay);
                 case DayOfWeek.Sunday:
-                    return CurrentDateIsInHours(_workerSchedule.Sunday);
+                    return CurrentDateIsInHours(WorkerSchedule.Sunday);
             }
 
             return true;
