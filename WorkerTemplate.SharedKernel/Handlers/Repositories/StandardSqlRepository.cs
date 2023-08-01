@@ -12,7 +12,7 @@ namespace WorkerTemplate.SharedKernel.Handlers.Repositories
             _configuration = configuration;
             _sqlFolderPath = string.Empty;
 
-            DefinirSqlPath();
+            SetSqlFolderPath();
         }
 
         protected readonly ILogger<StandardSqlRepository> Logger;
@@ -23,53 +23,57 @@ namespace WorkerTemplate.SharedKernel.Handlers.Repositories
         private const string REPOSITORY_LAYER_NAME = "Repositories";
         private const string SQL_FILES_STANDARD_FOLDER = "SQL";
 
-        protected string? GetSQLCommand(string nomeArquivo)
+        /// <summary>
+        /// Get the content of a SQL File located in the Repositories layer by its name. If there aren't any files with the specified name,
+        /// or the file is empty, the method inserts a notification with the type <see cref="NotificationType.Error"/> and returns it as an error.
+        /// </summary>Internal
+        protected string GetSQLCommandByFile(string fileName)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(_sqlFolderPath))
-                    return null;
+                    throw new Exception("There is no SQL Folder Path.");
 
-                string nomeCorrigidoArquivo = nomeArquivo.EndsWith(".sql") ? nomeArquivo.Replace(".sql", string.Empty) : nomeArquivo;
-                string[] linhas;
-                string conteudoArquivo = string.Empty;
+                string nameWithExtension = fileName.EndsWith(".sql") ? fileName : fileName + ".sql";
+                string filePath = Path.Combine(_sqlFolderPath, nameWithExtension);
+                string fileContent = string.Empty;
 
-                string pathArquivo = Path.Combine(_sqlFolderPath, nomeCorrigidoArquivo);
-                pathArquivo = pathArquivo.Replace("file:\\", "");
+                filePath = filePath.Replace("file:\\", "");
 
-                if (!File.Exists(pathArquivo))
-                {
-                    Logger.LogError(string.Format(KernelMessages.SQLFileNotFound, nomeCorrigidoArquivo));
-                    return null;
-                }
+                if (!File.Exists(filePath))
+                    throw new FileNotFoundException();
 
-                linhas = File.ReadAllLines(pathArquivo);
+                fileContent = string.Join(" ", File.ReadAllLines(filePath));
 
-                foreach (var linha in linhas)
-                    conteudoArquivo += $"{linha} ";
+                if (string.IsNullOrWhiteSpace(fileContent))
+                    throw new ArgumentNullException();
 
-                return conteudoArquivo;
+                return fileContent;
             }
             catch (ArgumentNullException)
             {
-                Logger.LogInformation(KernelMessages.SQLFileEmpty);
-                return null;
+                Logger.LogInformation(string.Format(KernelMessages.SQLFileEmpty, fileName));
+            }
+            catch (FileNotFoundException)
+            {
+                Logger.LogInformation(string.Format(KernelMessages.SQLFileNotFound, fileName));
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, KernelMessages.SQLFileError);
-                return null;
+                Logger.LogError(ex, string.Format(KernelMessages.SQLFileError, fileName));
             }
+
+            return string.Empty;
         }
 
-        protected async Task ExecuteSQLCommand(Func<SqlConnection, Task> funcao, string nomeBanco)
+        protected async Task ExecuteSQLCommand(Func<SqlConnection, Task> sqlOperation, string databaseName)
         {
-            var conexao = ObterConexaoSql(nomeBanco);
+            var connection = CreateSqlConnection(databaseName);
 
             try
             {
-                conexao.Open();
-                await funcao(conexao);
+                connection.Open();
+                await sqlOperation(connection);
             }
             catch (Exception ex)
             {
@@ -77,30 +81,36 @@ namespace WorkerTemplate.SharedKernel.Handlers.Repositories
             }
             finally
             {
-                conexao.Close();
+                connection.Close();
             }
-
         }
 
-        private SqlConnection ObterConexaoSql(string nomeBanco)
+        /// <summary>
+        /// Gets a connection string existing in the application config files with the specified key as the databaseName value. 
+        /// </summary>
+        protected SqlConnection CreateSqlConnection(string databaseName)
         {
-            var connectionString = _configuration.GetConnectionString(nomeBanco);
+            var connectionString = _configuration.GetConnectionString(databaseName);
 
             if (string.IsNullOrWhiteSpace(connectionString))
-                throw new Exception(KernelMessages.ConnectionStringNotFound);
+                Logger.LogInformation(KernelMessages.ConnectionStringNotFound);
 
             return new SqlConnection(connectionString);
         }
 
-        private void DefinirSqlPath()
+        private void SetSqlFolderPath()
         {
             string projectRoot = Path.GetDirectoryName(GetType().Assembly.Location) ?? "";
-            List<string> namespaces = GetType().Namespace?
-                .Split(".")
-                .Where(ns => ns != REPOSITORY_LAYER_NAME)
-                .ToList() ?? new List<string>();
+            var currentNamespaces = GetType().Namespace?.Split('.').ToArray() ?? new string[0];
 
-            _sqlFolderPath = Path.Combine(projectRoot, string.Join("\\", namespaces), SQL_FILES_STANDARD_FOLDER);
+            var repositoryLayerIndex = Array.IndexOf(currentNamespaces, REPOSITORY_LAYER_NAME) - 1;
+            _sqlFolderPath = projectRoot;
+
+            if (currentNamespaces.Length > repositoryLayerIndex + 1)
+                for (int index = repositoryLayerIndex + 1; index < currentNamespaces.Length; index++)
+                    _sqlFolderPath = Path.Combine(_sqlFolderPath, currentNamespaces[index]);
+
+            _sqlFolderPath = Path.Combine(_sqlFolderPath, SQL_FILES_STANDARD_FOLDER);
             _sqlFolderPath = _sqlFolderPath.Replace("file:\\", "");
         }
     }

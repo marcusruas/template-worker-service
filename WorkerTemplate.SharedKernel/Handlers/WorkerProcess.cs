@@ -11,15 +11,17 @@ namespace WorkerTemplate.SharedKernel.Handlers
 {
     public abstract class WorkerProcess : BackgroundService
     {
-        public WorkerProcess(ILogger<WorkerProcess> logger, IConfiguration configuration)
+        public WorkerProcess(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services)
         {
+            Services = services;
             Logger = logger;
             WorkerName = GetType().Name;
             WorkerSchedule = configuration.GetSection($"Schedules:{WorkerName}").Get<Schedule>();
             LastTimeExecuted = DateTime.MinValue;
         }
 
-        public readonly ILogger<WorkerProcess> Logger;
+        protected readonly IServiceProvider Services;
+        protected readonly ILogger<WorkerProcess> Logger;
 
         private DateTime LastTimeExecuted;
         private readonly string WorkerName;

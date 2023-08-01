@@ -13,5 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WorkerTemplate.SharedKernel\WorkerTemplate.SharedKernel.csproj" />
+    <ProjectReference Include="..\WorkerTemplate.Domain\WorkerTemplate.Domain.csproj" />
+    <ProjectReference Include="..\WorkerTemplate.Infrastructure\WorkerTemplate.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
