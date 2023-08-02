@@ -4,9 +4,9 @@ using WorkerTemplate.SharedKernel.Handlers;
 
 namespace WorkerTemplate.Workers
 {
-    public class Worker : WorkerProcess
+    public class ExampleWorker : WorkerProcess
     {
-        public Worker(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services)
+        public ExampleWorker(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services)
         : base(logger, configuration, services) { }
 
         protected override async Task ExecuteProcess(CancellationToken stoppingToken)
