@@ -16,7 +16,7 @@ namespace WorkerTemplate.SharedKernel.Handlers
             Services = services;
             Logger = logger;
             WorkerName = GetType().Name;
-            WorkerSchedule = configuration.GetSection($"Schedules:{WorkerName}").Get<Schedule>();
+            WorkerSchedule = configuration.GetSection($"Schedules:{WorkerName}").Get<WorkerSchedule>();
             LastTimeExecuted = DateTime.MinValue;
         }
 
@@ -25,7 +25,7 @@ namespace WorkerTemplate.SharedKernel.Handlers
 
         private DateTime LastTimeExecuted;
         private readonly string WorkerName;
-        private Schedule WorkerSchedule;
+        private WorkerSchedule WorkerSchedule;
 
         protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -48,17 +48,16 @@ namespace WorkerTemplate.SharedKernel.Handlers
                 {
                     Logger.LogInformation(string.Format(KernelMessages.ProcessEnded, WorkerName, DateTime.UtcNow));
                 }
+
+                await Task.Delay(WorkerSchedule.WorkerFrequencyInSeconds * 1000, stoppingToken);
             }
         }
 
         protected abstract Task ExecuteProcess(CancellationToken cancellationToken);
 
-        public bool CanRunAtTheMoment()
+        private bool CanRunAtTheMoment()
         {
             if (!WorkerSchedule.Enabled)
-                return false;
-
-            if (WorkerSchedule.RunOnlyOncePerHour && LastTimeExecuted.Date == DateTime.UtcNow.Date && LastTimeExecuted.Hour == DateTime.UtcNow.Hour)
                 return false;
 
             switch (DateTime.UtcNow.DayOfWeek)

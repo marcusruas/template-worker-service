@@ -1,12 +1,11 @@
 global using static WorkerTemplate.Infrastructure.DependencyInjection;
-using WorkerTemplate.Workers;
+using WorkerTemplate.Worker.Workers;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddInfrastructure();
-
-        services.AddHostedService<Worker>();
+        services.AddHostedService<ExampleWorker>();
     })
     .Build();
 
