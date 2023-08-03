@@ -2,7 +2,7 @@ using Microsoft.Extensions.Options;
 using WorkerTemplate.Infrastructure.Repositories.ExampleContext;
 using WorkerTemplate.SharedKernel.Handlers;
 
-namespace WorkerTemplate.Workers
+namespace WorkerTemplate.Worker.Workers
 {
     public class ExampleWorker : WorkerProcess
     {
