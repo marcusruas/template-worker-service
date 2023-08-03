@@ -79,6 +79,24 @@ namespace WorkerTemplate.SharedKernel.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a An exception occured while trying to process a message in Queue {0} at {1}. Message Details: {2}.
+        /// </summary>
+        internal static string ErrorInMessage {
+            get {
+                return ResourceManager.GetString("ErrorInMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Queue {0} receive Message with ID {1} from producer {2} at {3}.
+        /// </summary>
+        internal static string MessageReceived {
+            get {
+                return ResourceManager.GetString("MessageReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Process {0} ended at {1}.
         /// </summary>
         internal static string ProcessEnded {

@@ -17,13 +17,11 @@ namespace WorkerTemplate.SharedKernel.Handlers
             Logger = logger;
             WorkerName = GetType().Name;
             WorkerSchedule = configuration.GetSection($"Schedules:{WorkerName}").Get<WorkerSchedule>();
-            LastTimeExecuted = DateTime.MinValue;
         }
 
         protected readonly IServiceProvider Services;
         protected readonly ILogger<WorkerProcess> Logger;
 
-        private DateTime LastTimeExecuted;
         private readonly string WorkerName;
         private WorkerSchedule WorkerSchedule;
 
@@ -38,7 +36,6 @@ namespace WorkerTemplate.SharedKernel.Handlers
                 {
                     Logger.LogInformation(string.Format(KernelMessages.ProcessStarted, WorkerName, DateTime.UtcNow));
                     await ExecuteProcess(stoppingToken);
-                    LastTimeExecuted = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {
@@ -49,7 +46,7 @@ namespace WorkerTemplate.SharedKernel.Handlers
                     Logger.LogInformation(string.Format(KernelMessages.ProcessEnded, WorkerName, DateTime.UtcNow));
                 }
 
-                await Task.Delay(WorkerSchedule.WorkerFrequencyInSeconds * 1000, stoppingToken);
+                await Task.Delay(WorkerSchedule.WorkerFrequencyInMinutes * 60000, stoppingToken);
             }
         }
 
@@ -78,7 +75,7 @@ namespace WorkerTemplate.SharedKernel.Handlers
                     return CurrentDateIsInHours(WorkerSchedule.Sunday);
             }
 
-            return true;
+            return false;
         }
 
         private bool CurrentDateIsInHours(int[]? enabledHours)

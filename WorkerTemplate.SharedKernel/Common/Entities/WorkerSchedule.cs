@@ -8,7 +8,7 @@ namespace WorkerTemplate.SharedKernel.Common.Entities
     public class WorkerSchedule
     {
         public bool Enabled { get; set; }
-        public int WorkerFrequencyInSeconds { get; set; }
+        public int WorkerFrequencyInMinutes { get; set; }
         public int[]? Monday { get; set; }
         public int[]? Tuesday { get; set; }
         public int[]? Wednesday { get; set; }
