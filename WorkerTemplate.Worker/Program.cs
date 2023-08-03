@@ -11,7 +11,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddMassTransit(reg =>
         {
-            AddQueueConsumerIfEnabled<ExampleQueueConsumer>(reg, hostContext);
+            AddQueueConsumerIfEnabled<ExampleQueueHandler>(reg, hostContext);
 
             reg.UsingRabbitMq((context, cfg) =>
             {

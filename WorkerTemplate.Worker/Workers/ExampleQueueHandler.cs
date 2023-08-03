@@ -6,9 +6,9 @@ using WorkerTemplate.SharedKernel.Handlers;
 
 namespace WorkerTemplate.Worker.Workers
 {
-    public class ExampleQueueConsumer : QueueConsumer<Person>
+    public class ExampleQueueHandler : QueueConsumer<Person>
     {
-        public ExampleQueueConsumer(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services) : base(logger, configuration, services)
+        public ExampleQueueHandler(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services) : base(logger, configuration, services)
         {
         }
 
