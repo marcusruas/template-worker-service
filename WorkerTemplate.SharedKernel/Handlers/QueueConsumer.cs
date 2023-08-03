@@ -31,6 +31,9 @@ namespace WorkerTemplate.SharedKernel.Handlers
 
         public async Task Consume(ConsumeContext<T> context)
         {
+            if (!QueueSchedule.Enabled)
+                return;
+
             try
             {
                 Logger.LogInformation(string.Format(KernelMessages.MessageReceived, QueueName, context.MessageId, context.SourceAddress, DateTime.UtcNow));

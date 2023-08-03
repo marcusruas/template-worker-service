@@ -23,7 +23,7 @@ namespace WorkerTemplate.SharedKernel.Handlers
         protected readonly ILogger<WorkerProcess> Logger;
 
         private readonly string WorkerName;
-        private WorkerSchedule WorkerSchedule;
+        private readonly WorkerSchedule WorkerSchedule;
 
         protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -73,9 +73,9 @@ namespace WorkerTemplate.SharedKernel.Handlers
                     return CurrentDateIsInHours(WorkerSchedule.SaturDay);
                 case DayOfWeek.Sunday:
                     return CurrentDateIsInHours(WorkerSchedule.Sunday);
+                default:
+                    return true;
             }
-
-            return false;
         }
 
         private bool CurrentDateIsInHours(int[]? enabledHours)
