@@ -28,15 +28,15 @@ await host.RunAsync();
 
 static void AddHostedServiceIfEnabled<T>(IServiceCollection services, HostBuilderContext context) where T : WorkerProcess
 {
-    var workerSchedule = context.Configuration.GetSection($"Schedules:{nameof(T)}").Get<WorkerSchedule>();
+    var schedule = context.Configuration.GetSection($"Schedules:{typeof(T).Name}").Get<WorkerSchedule>();
 
-    if (workerSchedule.Enabled)
+    if (schedule.Enabled)
         services.AddHostedService<T>();
 }
 
 static void AddQueueConsumerIfEnabled<T>(IBusRegistrationConfigurator registrator, HostBuilderContext context) where T : class, IConsumer
 {
-    var schedule = context.Configuration.GetSection($"Schedules:{nameof(T)}").Get<QueueSchedule>();
+    var schedule = context.Configuration.GetSection($"Schedules:{typeof(T).Name}").Get<QueueSchedule>();
 
     if (schedule.Enabled)
         registrator.AddConsumer<T>();
