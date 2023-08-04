@@ -1,6 +1,5 @@
 $CONTAINER_NAME = "worker_template_database"
 $SQLSERVER_PASSWORD = "IHeartRainbows44"
-$RABBITMQ_PORT = 15672
 
 Write-Output "Creating SQL Server container named $CONTAINER_NAME"
 
