@@ -4,8 +4,6 @@ $ContainerName = "container_worker_template"
 
 Write-Output "Building the Docker Image"
 
-cd "../"
-
 # Constrói a imagem Docker usando o Dockerfile
 docker build -t $ImageName .
 
