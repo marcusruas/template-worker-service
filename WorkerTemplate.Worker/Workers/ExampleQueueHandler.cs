@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
+using WorkerTemplate.Domain.QueueContracts;
 using WorkerTemplate.SharedKernel.Handlers;
 
 namespace WorkerTemplate.Worker.Workers
@@ -12,15 +15,23 @@ namespace WorkerTemplate.Worker.Workers
         {
         }
 
-        public override Task ProcessMessage(Person message)
+        public override async Task ProcessMessage(Person message)
         {
-            Console.WriteLine($"Person received: {message.Name}");
-            return Task.CompletedTask;
-        }
-    }
+            using (var scope = Services.CreateScope())
+            {
+                var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+                using (var connection = new SqlConnection("Server=.;Database=master;User Id=sa;Password=IHeartRainbows44;"))
+                {
+                    var command = $"INSERT INTO WORKER_LOGS VALUES (@INSTANCE, @MESSAGE, GETDATE())";
+                    await connection.ExecuteAsync(command, new
+                    {
+                        Instance = configuration.GetSection("InstanceName").Get<string>(),
+                        Message = $"Person Received: {message.Name}"
+                    });
+                }
+            }
 
-    public class Person
-    {
-        public string? Name { get; set; }
+            await Task.Delay(10000);
+        }
     }
 }
