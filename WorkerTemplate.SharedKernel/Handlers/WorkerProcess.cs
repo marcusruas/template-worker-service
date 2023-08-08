@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,19 +12,23 @@ namespace WorkerTemplate.SharedKernel.Handlers
 {
     public abstract class WorkerProcess : BackgroundService
     {
-        public WorkerProcess(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services)
+        public WorkerProcess(IServiceProvider services, IBus bus, ILogger<WorkerProcess> logger, IConfiguration configuration)
         {
             Services = services;
             Logger = logger;
+            BusControl = bus;
+            Configuration = configuration;
             WorkerName = GetType().Name;
-            WorkerSchedule = configuration.GetSection($"Schedules:{WorkerName}").Get<WorkerSchedule>();
+            WorkerSchedule = Configuration.GetSection($"Schedules:{WorkerName}").Get<WorkerSchedule>();
         }
 
         protected readonly IServiceProvider Services;
         protected readonly ILogger<WorkerProcess> Logger;
 
-        private readonly string WorkerName;
+        private readonly IBus BusControl;
+        private readonly IConfiguration Configuration;
         private readonly WorkerSchedule WorkerSchedule;
+        private readonly string WorkerName;
 
         protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -51,6 +56,29 @@ namespace WorkerTemplate.SharedKernel.Handlers
         }
 
         protected abstract Task ExecuteProcess(CancellationToken cancellationToken);
+
+        protected async Task SendMessage<C, T>(T message, string messageQueueName) where C : IConsumer<T> where T : class
+        {
+            var connectionString = Configuration.GetConnectionString(messageQueueName);
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                Logger.LogError(string.Format(KernelMessages.ConnectionStringNotFound, WorkerName, DateTime.UtcNow));
+                throw new ArgumentException(KernelMessages.ConnectionStringNotFound);
+            }
+
+            try
+            {
+                var endpointUri = new Uri($"{connectionString}/{typeof(C).Name}");
+                var endpoint = await BusControl.GetSendEndpoint(endpointUri);
+
+                await endpoint.Send(message);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, string.Format(KernelMessages.FailedToSendMessage, typeof(T).Name, DateTime.UtcNow, message));
+            }
+        }
 
         private bool CanRunAtTheMoment()
         {

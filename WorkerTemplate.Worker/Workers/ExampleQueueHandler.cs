@@ -25,7 +25,7 @@ namespace WorkerTemplate.Worker.Workers
                     var command = $"INSERT INTO WORKER_LOGS VALUES (@INSTANCE, @MESSAGE, GETDATE())";
                     await connection.ExecuteAsync(command, new
                     {
-                        Instance = Environment.GetEnvironmentVariable("INSTANCE_NAME"),
+                        Instance = Environment.GetEnvironmentVariable("INSTANCE_NAME") ?? "N/A",
                         Message = $"Person Received: {message.Name}"
                     });
                 }
