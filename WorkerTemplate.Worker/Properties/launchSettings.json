@@ -1,11 +1,12 @@
-﻿{
+{
   "profiles": {
     "WorkerTemplate": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
-      }
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5000"
     }
   }
 }

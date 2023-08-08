@@ -126,6 +126,9 @@
   <data name="ErrorInMessage" xml:space="preserve">
     <value>An exception occured while trying to process a message in Queue {0} at {1}. Message Details: {2}</value>
   </data>
+  <data name="FailedToSendMessage" xml:space="preserve">
+    <value>A message was failed to be sent to the consumer {0} at {1}. Message details: {2}</value>
+  </data>
   <data name="MessageReceived" xml:space="preserve">
     <value>Queue {0} receive Message with ID {1} from producer {2} at {3}</value>
   </data>

@@ -88,6 +88,15 @@ namespace WorkerTemplate.SharedKernel.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A message was failed to be sent to the consumer {0} at {1}. Message details: {2}.
+        /// </summary>
+        internal static string FailedToSendMessage {
+            get {
+                return ResourceManager.GetString("FailedToSendMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Queue {0} receive Message with ID {1} from producer {2} at {3}.
         /// </summary>
         internal static string MessageReceived {

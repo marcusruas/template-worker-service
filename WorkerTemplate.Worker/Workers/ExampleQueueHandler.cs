@@ -1,26 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
+using MassTransit;
+using WorkerTemplate.QueueContracts;
 using WorkerTemplate.SharedKernel.Handlers;
 
 namespace WorkerTemplate.Worker.Workers
 {
-    public class ExampleQueueHandler : QueueConsumer<Person>
+    public class ExampleQueueHandler : QueueConsumer<ExampleContract>
     {
-        public ExampleQueueHandler(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services) : base(logger, configuration, services)
+        public ExampleQueueHandler(ILogger<ExampleQueueHandler> logger, IBus bus, IConfiguration configuration, IServiceProvider services) : base(logger, bus, configuration, services)
         {
         }
 
-        public override Task ProcessMessage(Person message)
+        public override Task ProcessMessage(ExampleContract message)
         {
-            Console.WriteLine($"Person received: {message.Name}");
+            Console.WriteLine($"Message received: {message.Value}");
             return Task.CompletedTask;
         }
-    }
-
-    public class Person
-    {
-        public string? Name { get; set; }
     }
 }

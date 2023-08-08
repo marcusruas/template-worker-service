@@ -1,18 +1,20 @@
 using Microsoft.Extensions.Options;
 using WorkerTemplate.Infrastructure.Repositories.ExampleContext;
 using WorkerTemplate.SharedKernel.Handlers;
+using MassTransit;
+using WorkerTemplate.QueueContracts;
 
 namespace WorkerTemplate.Worker.Workers
 {
     public class ExampleWorker : WorkerProcess
     {
-        public ExampleWorker(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services)
-        : base(logger, configuration, services) { }
+        public ExampleWorker(IServiceProvider services, IBus bus, ILogger<WorkerProcess> logger, IConfiguration configuration)
+        : base(services, bus, logger, configuration) { }
 
         protected override async Task ExecuteProcess(CancellationToken stoppingToken)
         {
+            await SendMessage<ExampleQueueHandler, ExampleContract>(new ExampleContract(), "RabbitMQ");
             Logger.LogInformation($"Worker running at: {DateTime.UtcNow}");
-            await Task.Delay(1000, stoppingToken);
         }
     }
 }
