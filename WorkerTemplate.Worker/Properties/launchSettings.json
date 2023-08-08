@@ -7,24 +7,6 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5000"
-    },
-    "Instance1": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development",
-        "INSTANCE_NAME": "Instance 1"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5000"
-    },
-    "Instance2": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development",
-        "INSTANCE_NAME": "Instance 2"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5002"
     }
   }
 }

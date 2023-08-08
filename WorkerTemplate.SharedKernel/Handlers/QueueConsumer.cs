@@ -14,18 +14,22 @@ namespace WorkerTemplate.SharedKernel.Handlers
 {
     public abstract class QueueConsumer<T> : IConsumer<T> where T : class
     {
-        public QueueConsumer(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services)
+        public QueueConsumer(ILogger<QueueConsumer<T>> logger, IBus bus, IConfiguration configuration, IServiceProvider services)
         {
             Services = services;
             Logger = logger;
+            BusControl = bus;
+            Configuration = configuration;
             QueueName = GetType().Name;
             QueueSchedule = configuration.GetSection($"Schedules:{QueueName}").Get<QueueSchedule>();
 
         }
 
         protected readonly IServiceProvider Services;
-        protected readonly ILogger<WorkerProcess> Logger;
+        protected readonly ILogger<QueueConsumer<T>> Logger;
 
+        private readonly IBus BusControl;
+        private readonly IConfiguration Configuration;
         private readonly string QueueName;
         private readonly QueueSchedule QueueSchedule;
 
@@ -42,6 +46,30 @@ namespace WorkerTemplate.SharedKernel.Handlers
             catch (Exception ex)
             {
                 Logger.LogError(ex, string.Format(KernelMessages.ErrorInMessage, QueueName, DateTime.UtcNow, JsonConvert.SerializeObject(context)));
+            }
+        }
+
+        protected async Task SendMessage<C, M>(M message, string messageQueueName) where C : IConsumer<M> where M : class
+        {
+            var connectionString = Configuration.GetConnectionString(messageQueueName);
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                Logger.LogError(string.Format(KernelMessages.ConnectionStringNotFound, QueueName, DateTime.UtcNow));
+                throw new ArgumentException(KernelMessages.ConnectionStringNotFound);
+            }
+
+            try
+            {
+                var endpointUri = new Uri($"{connectionString}/{typeof(C).Name}");
+                var endpoint = await BusControl.GetSendEndpoint(endpointUri);
+
+                await endpoint.Send(message);
+            }
+            catch (Exception ex)
+            {
+                var serializedMessage = JsonConvert.SerializeObject(message);
+                Logger.LogError(ex, string.Format(KernelMessages.FailedToSendMessage, typeof(M).Name, DateTime.UtcNow, serializedMessage));
             }
         }
 

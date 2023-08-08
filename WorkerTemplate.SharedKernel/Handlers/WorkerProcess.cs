@@ -6,6 +6,7 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using WorkerTemplate.SharedKernel.Common.Entities;
 
 namespace WorkerTemplate.SharedKernel.Handlers
@@ -76,7 +77,8 @@ namespace WorkerTemplate.SharedKernel.Handlers
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, string.Format(KernelMessages.FailedToSendMessage, typeof(T).Name, DateTime.UtcNow, message));
+                var serializedMessage = JsonConvert.SerializeObject(message);
+                Logger.LogError(ex, string.Format(KernelMessages.FailedToSendMessage, typeof(T).Name, DateTime.UtcNow, serializedMessage));
             }
         }
 

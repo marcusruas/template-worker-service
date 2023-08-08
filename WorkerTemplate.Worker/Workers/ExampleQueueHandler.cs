@@ -4,34 +4,22 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using WorkerTemplate.Domain.QueueContracts;
+using MassTransit;
+using WorkerTemplate.QueueContracts;
 using WorkerTemplate.SharedKernel.Handlers;
 
 namespace WorkerTemplate.Worker.Workers
 {
-    public class ExampleQueueHandler : QueueConsumer<Person>
+    public class ExampleQueueHandler : QueueConsumer<ExampleContract>
     {
-        public ExampleQueueHandler(ILogger<WorkerProcess> logger, IConfiguration configuration, IServiceProvider services) : base(logger, configuration, services)
+        public ExampleQueueHandler(ILogger<ExampleQueueHandler> logger, IBus bus, IConfiguration configuration, IServiceProvider services) : base(logger, bus, configuration, services)
         {
         }
 
-        public override async Task ProcessMessage(Person message)
+        public override Task ProcessMessage(ExampleContract message)
         {
-            using (var scope = Services.CreateScope())
-            {
-                var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-                using (var connection = new SqlConnection("Server=.;Database=master;User Id=sa;Password=IHeartRainbows44;"))
-                {
-                    var command = $"INSERT INTO WORKER_LOGS VALUES (@INSTANCE, @MESSAGE, GETDATE())";
-                    await connection.ExecuteAsync(command, new
-                    {
-                        Instance = Environment.GetEnvironmentVariable("INSTANCE_NAME") ?? "N/A",
-                        Message = $"Person Received: {message.Name}"
-                    });
-                }
-            }
-
-            await Task.Delay(10000);
+            Console.WriteLine($"Message received: {message.Value}");
+            return Task.CompletedTask;
         }
     }
 }

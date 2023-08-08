@@ -1,10 +1,11 @@
+# CREATING A DATABASE FOR STUDIES
+
 $CONTAINER_NAME = "worker_template_database"
 $SQLSERVER_PASSWORD = "IHeartRainbows44"
-$NETWORK_NAME = "worker_network"
 
 Write-Output "Creating SQL Server container named $CONTAINER_NAME"
 
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=$SQLSERVER_PASSWORD" --network $NETWORK_NAME --name $CONTAINER_NAME -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=$SQLSERVER_PASSWORD" --name $CONTAINER_NAME -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
 
 Write-Output "Starting container $CONTAINER_NAME"
 

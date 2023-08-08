@@ -1,7 +1,6 @@
 # Defina o nome da imagem e o nome do container desejados
 $IMAGE_NAME = "worker_template_image"
 $CONTAINER_NAME = "container_worker_template"
-$NETWORK_NAME = "worker_network"
 
 Write-Output "Building the Docker Image"
 

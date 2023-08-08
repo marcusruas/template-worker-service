@@ -2,7 +2,7 @@ using Microsoft.Extensions.Options;
 using WorkerTemplate.Infrastructure.Repositories.ExampleContext;
 using WorkerTemplate.SharedKernel.Handlers;
 using MassTransit;
-using WorkerTemplate.Domain.QueueContracts;
+using WorkerTemplate.QueueContracts;
 
 namespace WorkerTemplate.Worker.Workers
 {
@@ -13,9 +13,8 @@ namespace WorkerTemplate.Worker.Workers
 
         protected override async Task ExecuteProcess(CancellationToken stoppingToken)
         {
-            await SendMessage<ExampleQueueHandler, Person>(new Person(), "RabbitMQ");
+            await SendMessage<ExampleQueueHandler, ExampleContract>(new ExampleContract(), "RabbitMQ");
             Logger.LogInformation($"Worker running at: {DateTime.UtcNow}");
-            await Task.Delay(1000, stoppingToken);
         }
     }
 }
