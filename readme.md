@@ -15,6 +15,7 @@ This documentation serves as a template for creating worker applications in .NET
    - [Workers](#workers)
    - [Queue Consumers](#queue-consumers)
    - [About publishing a message in a consumer's queue](#publishing-messages)
+5. [References](#references)
 
 ## Introduction
 
@@ -135,7 +136,6 @@ public class ExampleQueueHandler : QueueConsumer<ExampleContract>
 }
 
 //The ideal would be to keep the namespace simple, as it needs to be matched by external apps to send a message properly.
-//For more information, read https://masstransit.io/documentation/concepts/messages
 namespace WorkerTemplate.QueueContracts
 {
     //An example of a message to be consumed by the queue consumer
@@ -210,3 +210,14 @@ namespace WorkerTemplate.QueueContracts
     }
 }
 ```
+
+## References
+
+This project utilizes a few widely used, reliable and easy to implement packages to make the code cleaner and faster. You can access its documentations below:
+
+- https://learn.microsoft.com/pt-br/dotnet/core/extensions/workers This is an app made with the Worker Architecture in .NET
+- https://docs.docker.com/samples/dotnet/ I have added a few scripts for creating a basic structure in order to test the application, such as a RabbitMQ and a SQL Server container.
+- https://masstransit.io/documentation/concepts MassTransit is used as an interface for implementing messaging queue easily. Although it has a few cons, it is very easy to implement and very reliable (60 Million downloads at nuget.org at the time I'm writing this)
+- https://www.rabbitmq.com/ although MassTransit handles the messaging queues, it required a provider, so I opted for using RabbitMQ due to it being quite simple, providing a management dashboard and it's the most used provider for this kind of operations. I must say that though that changing the provider is easy and can be done in the Program.cs file of the application
+- https://www.learndapper.com/ This app uses Dapper as its provider for handling SQL Commands, as it's easy to use, have little to no configuration involved and is a very flexible library.
+- https://www.mongodb.com/docs/drivers/csharp/current/ This app also have a very basic implementation of an abstract class for handling NoSql commands and its connections.
