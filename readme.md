@@ -122,6 +122,7 @@ Example of a worker configuration:
 Example of a ready-to-go consumer:
 
 ```csharp
+//It doesn't have to be in the same namespace as the contract
 public class ExampleQueueHandler : QueueConsumer<ExampleContract>
 {
     public ExampleQueueHandler(ILogger<ExampleQueueHandler> logger, IBus bus, IConfiguration configuration, IServiceProvider services)
@@ -130,6 +131,22 @@ public class ExampleQueueHandler : QueueConsumer<ExampleContract>
     public override Task ProcessMessage(ExampleContract message)
     {
         //Implement the worker's logic here.
+    }
+}
+
+//The ideal would be to keep the namespace simple, as it needs to be matched by external apps to send a message properly.
+//For more information, read https://masstransit.io/documentation/concepts/messages
+namespace WorkerTemplate.QueueContracts
+{
+    //An example of a message to be consumed by the queue consumer
+    public class ExampleContract
+    {
+        public ExampleContract()
+        {
+            Value = "Obi-Wan Kenobi: Hello there!\nGeneral Grievous: General Kenobi!";
+        }
+
+        public string? Value { get; set; }
     }
 }
 ```
@@ -169,9 +186,9 @@ namespace RandomNamespace
             var uri = new Uri("rabbitmq://{connectionStringg}/ExampleQueueHandler");
             var endPoint = await busControl.GetSendEndpoint(uri);
 
-            var message = new WorkerTemplate.Domain.QueueContracts.Person();
+            var message = new WorkerTemplate.QueueContracts.ExampleContract();
             await endPoint.Send(message);
-            Console.WriteLine("Menssage sent: {0}", message.Name);
+            Console.WriteLine("Menssage sent: {0}", message.Value);
 
             busControl.Stop();
         }
@@ -179,16 +196,17 @@ namespace RandomNamespace
 }
 
 //Message Contract type
-namespace WorkerTemplate.Domain.QueueContracts //This namespace must be the same as the existing message class in the consumer's project
+namespace WorkerTemplate.QueueContracts
 {
-    public class Person
+    //An example of a message to be consumed by the queue consumer
+    public class ExampleContract
     {
-        public Person()
+        public ExampleContract()
         {
-            Name = "Random value for demonstration";
+            Value = "Obi-Wan Kenobi: Hello there!\nGeneral Grievous: General Kenobi!";
         }
 
-        public string? Name { get; set; }
+        public string? Value { get; set; }
     }
 }
 ```
