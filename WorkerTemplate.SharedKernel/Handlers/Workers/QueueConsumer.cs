@@ -10,7 +10,7 @@ using System.Text;
 using MassTransit;
 using Newtonsoft.Json;
 
-namespace WorkerTemplate.SharedKernel.Handlers
+namespace WorkerTemplate.SharedKernel.Handlers.Workers
 {
     public abstract class QueueConsumer<T> : IConsumer<T> where T : class
     {

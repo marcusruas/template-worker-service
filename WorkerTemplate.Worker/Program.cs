@@ -2,7 +2,10 @@ global using static WorkerTemplate.Infrastructure.DependencyInjection;
 using WorkerTemplate.Worker.Workers;
 using MassTransit;
 using WorkerTemplate.SharedKernel.Common.Entities;
-using WorkerTemplate.SharedKernel.Handlers;
+using WorkerTemplate.SharedKernel.Handlers.Workers;
+using WorkerTemplate.Worker.Consumers;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
@@ -11,7 +14,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddMassTransit(reg =>
         {
-            AddQueueConsumerIfEnabled<ExampleQueueHandler>(reg, hostContext);
+            InjectEnabledQueueConsumers(services, reg, hostContext);
 
             reg.UsingRabbitMq((context, cfg) =>
             {
@@ -20,24 +23,34 @@ IHost host = Host.CreateDefaultBuilder(args)
             });
         });
 
-        AddHostedServiceIfEnabled<ExampleWorker>(services, hostContext);
+        InjectEnabledHostedServices(services, hostContext);
     })
     .Build();
 
 await host.RunAsync();
 
-static void AddHostedServiceIfEnabled<T>(IServiceCollection services, HostBuilderContext context) where T : WorkerProcess
+static void InjectEnabledHostedServices(IServiceCollection services, HostBuilderContext context)
 {
-    var schedule = context.Configuration.GetSection($"Schedules:{typeof(T).Name}").Get<WorkerSchedule>();
+    var types = Assembly.GetExecutingAssembly().GetExportedTypes();
 
-    if (schedule.Enabled)
-        services.AddHostedService<T>();
+    foreach (var type in types.Where(x => x.BaseType == typeof(WorkerProcess)))
+    {
+        var schedule = context.Configuration.GetSection($"Schedules:{type.Name}").Get<WorkerSchedule>();
+
+        if (schedule.Enabled)
+            services.TryAddEnumerable(ServiceDescriptor.Singleton(typeof(IHostedService), type));
+    }
 }
 
-static void AddQueueConsumerIfEnabled<T>(IBusRegistrationConfigurator registrator, HostBuilderContext context) where T : class, IConsumer
+static void InjectEnabledQueueConsumers(IServiceCollection services, IBusRegistrationConfigurator registrator, HostBuilderContext context)
 {
-    var schedule = context.Configuration.GetSection($"Schedules:{typeof(T).Name}").Get<QueueSchedule>();
+    var types = Assembly.GetExecutingAssembly().GetExportedTypes();
 
-    if (schedule.Enabled)
-        registrator.AddConsumer<T>();
+    foreach (var type in types.Where(x => x.GetInterfaces().Contains(typeof(IConsumer))))
+    {
+        var schedule = context.Configuration.GetSection($"Schedules:{type.Name}").Get<WorkerSchedule>();
+
+        if (schedule.Enabled)
+            registrator.AddConsumer(type);
+    }
 }

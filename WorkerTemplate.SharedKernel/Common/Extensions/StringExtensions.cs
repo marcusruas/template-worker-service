@@ -7,6 +7,9 @@ namespace WorkerTemplate.SharedKernel.Common.Extensions
 {
     public static class StringExtensions
     {
+        /// <summary>
+        /// Remove accents from a string. returns a new string if the conversion was successfull. If the value is null or whitespace it returns null.
+        /// </summary>
         public static string? RemoveAccents(this string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -25,27 +28,16 @@ namespace WorkerTemplate.SharedKernel.Common.Extensions
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC).Trim();
         }
 
-        public static bool HasWhiteSpaces(this string text)
+        /// <summary>
+        /// Checks if a string contains accents.
+        /// </summary>
+        public static bool HasAccents(this string value)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(value))
                 return false;
 
-            foreach (var character in text)
-            {
-                if (char.IsWhiteSpace(character))
-                    return true;
-            }
-
-            return false;
-        }
-
-        public static bool HasAccents(this string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                return false;
-
-            var formattedText = text.Trim().ToUpper();
-            var normalizedText = text.RemoveAccents();
+            var formattedText = value.Trim().ToUpper();
+            var normalizedText = value.RemoveAccents();
 
             return formattedText != normalizedText;
         }

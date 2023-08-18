@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace WorkerTemplate.SharedKernel.Handlers.Repositories
 {
-    public abstract class StandardSqlRepository : IRepository
+    public abstract class StandardSqlRepository
     {
         public StandardSqlRepository(IConfiguration configuration, ILogger<StandardSqlRepository> logger)
         {
@@ -23,10 +23,6 @@ namespace WorkerTemplate.SharedKernel.Handlers.Repositories
         private const string REPOSITORY_LAYER_NAME = "Repositories";
         private const string SQL_FILES_STANDARD_FOLDER = "SQL";
 
-        /// <summary>
-        /// Get the content of a SQL File located in the Repositories layer by its name. If there aren't any files with the specified name,
-        /// or the file is empty, the method inserts a notification with the type <see cref="NotificationType.Error"/> and returns it as an error.
-        /// </summary>Internal
         protected string GetSQLCommandByFile(string fileName)
         {
             try

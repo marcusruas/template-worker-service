@@ -3,7 +3,7 @@ using MongoDB.Driver;
 
 namespace WorkerTemplate.SharedKernel.Handlers.Repositories
 {
-    public abstract class StandardNoSqlRepository : IRepository
+    public abstract class StandardNoSqlRepository
     {
         public StandardNoSqlRepository(IConfiguration configuration, string nomeBanco)
         {

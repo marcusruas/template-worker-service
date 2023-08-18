@@ -1,10 +1,11 @@
-# Defina o nome da imagem e o nome do container desejados
+# Set the image name
 $IMAGE_NAME = "worker_template_image"
+# Set the container name
 $CONTAINER_NAME = "container_worker_template"
 
 Write-Output "Building the Docker Image"
 
-# Constrói a imagem Docker usando o Dockerfile
+# Build the Docker Image
 docker build -t $IMAGE_NAME ../.
 
 Write-Output "Running the app"

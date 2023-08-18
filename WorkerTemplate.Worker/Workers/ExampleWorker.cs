@@ -1,8 +1,7 @@
-using Microsoft.Extensions.Options;
-using WorkerTemplate.Infrastructure.Repositories.ExampleContext;
-using WorkerTemplate.SharedKernel.Handlers;
 using MassTransit;
 using WorkerTemplate.QueueContracts;
+using WorkerTemplate.SharedKernel.Handlers.Workers;
+using WorkerTemplate.Worker.Consumers;
 
 namespace WorkerTemplate.Worker.Workers
 {

@@ -1,5 +1,4 @@
 # CREATING A DATABASE FOR STUDIES
-
 $CONTAINER_NAME = "worker_template_database"
 $SQLSERVER_PASSWORD = "IHeartRainbows44"
 
@@ -12,9 +11,3 @@ Write-Output "Starting container $CONTAINER_NAME"
 docker start $CONTAINER_NAME
 
 Write-Output "Container running."
-
-# CREATE TABLE WORKER_LOGS(
-# 	INSTANCENAME VARCHAR(100) NOT NULL,
-# 	MESSAGE VARCHAR(1000) NOT NULL,
-# 	DATE DATETIME NOT NULL DEFAULT GETDATE()
-# )

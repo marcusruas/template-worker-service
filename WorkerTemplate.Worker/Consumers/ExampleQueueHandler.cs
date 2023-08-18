@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 using Dapper;
 using MassTransit;
 using WorkerTemplate.QueueContracts;
-using WorkerTemplate.SharedKernel.Handlers;
+using WorkerTemplate.SharedKernel.Handlers.Workers;
 
-namespace WorkerTemplate.Worker.Workers
+namespace WorkerTemplate.Worker.Consumers
 {
     public class ExampleQueueHandler : QueueConsumer<ExampleContract>
     {
-        public ExampleQueueHandler(ILogger<ExampleQueueHandler> logger, IBus bus, IConfiguration configuration, IServiceProvider services) : base(logger, bus, configuration, services)
-        {
-        }
+        public ExampleQueueHandler(ILogger<ExampleQueueHandler> logger, IBus bus, IConfiguration configuration, IServiceProvider services)
+        : base(logger, bus, configuration, services) { }
 
         public override Task ProcessMessage(ExampleContract message)
         {

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WorkerTemplate.SharedKernel.Common.Entities;
 
-namespace WorkerTemplate.SharedKernel.Handlers
+namespace WorkerTemplate.SharedKernel.Handlers.Workers
 {
     public abstract class WorkerProcess : BackgroundService
     {
