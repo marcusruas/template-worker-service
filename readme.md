@@ -10,6 +10,7 @@ This documentation serves as a template for creating worker applications in .NET
    - [Infrastructure Layer](#infrastructure-layer)
    - [SharedKernel Layer](#sharedkernel-layer)
    - [Worker Layer](#worker-layer)
+   - [Test Layer](#test-layer)
 3. [Getting Started](#getting-started)
 4. [Usage](#usage)
    - [Workers](#workers)
@@ -40,6 +41,10 @@ The SharedKernel layer contains abstract classes, utility functions, and applica
 ### Worker Layer
 
 The Worker layer contains the workers responsible for executing background tasks and processing asynchronous jobs. It coordinates with the other layers to perform specific tasks based on the business logic.
+
+### Tests Layer
+
+The Tests layer contains the tests for the workers in the project. It uses the classes from the Shared Kernel to test from the business logic to the worker itself.
 
 ## Getting Started
 
@@ -221,3 +226,6 @@ This project utilizes a few widely used, reliable and easy to implement packages
 - https://www.rabbitmq.com/ although MassTransit handles the messaging queues, it required a provider, so I opted for using RabbitMQ due to it being quite simple, providing a management dashboard and it's the most used provider for this kind of operations. I must say that though that changing the provider is easy and can be done in the Program.cs file of the application
 - https://www.learndapper.com/ This app uses Dapper as its provider for handling SQL Commands, as it's easy to use, have little to no configuration involved and is a very flexible library.
 - https://www.mongodb.com/docs/drivers/csharp/current/ This app also have a very basic implementation of an abstract class for handling NoSql commands and its connections.
+
+- https://github.com/moq/moq This package contains a few methods to mock objects more easily.
+- https://github.com/bchavez/Bogus This package contains Functions to generate bogus data.
