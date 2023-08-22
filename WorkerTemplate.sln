@@ -5,11 +5,13 @@ VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkerTemplate.Worker", "WorkerTemplate.Worker\WorkerTemplate.Worker.csproj", "{2182EE70-E2B7-41F5-BE2A-7467EDE0D687}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerTemplate.Infrastructure", "WorkerTemplate.Infrastructure\WorkerTemplate.Infrastructure.csproj", "{65D92AF7-5C09-4500-BFEE-18451D54A35C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkerTemplate.Infrastructure", "WorkerTemplate.Infrastructure\WorkerTemplate.Infrastructure.csproj", "{65D92AF7-5C09-4500-BFEE-18451D54A35C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerTemplate.Domain", "WorkerTemplate.Domain\WorkerTemplate.Domain.csproj", "{EC32EF71-6161-4AFE-B916-2166A27395EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkerTemplate.Domain", "WorkerTemplate.Domain\WorkerTemplate.Domain.csproj", "{EC32EF71-6161-4AFE-B916-2166A27395EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerTemplate.SharedKernel", "WorkerTemplate.SharedKernel\WorkerTemplate.SharedKernel.csproj", "{3D5D1344-CB83-49C4-B801-E89EDDC61819}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkerTemplate.SharedKernel", "WorkerTemplate.SharedKernel\WorkerTemplate.SharedKernel.csproj", "{3D5D1344-CB83-49C4-B801-E89EDDC61819}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerTemplate.Tests", "WorkerTemplate.Tests\WorkerTemplate.Tests.csproj", "{A1571C67-B3BE-44E1-95F3-9CA5D391E43A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{3D5D1344-CB83-49C4-B801-E89EDDC61819}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D5D1344-CB83-49C4-B801-E89EDDC61819}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D5D1344-CB83-49C4-B801-E89EDDC61819}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1571C67-B3BE-44E1-95F3-9CA5D391E43A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1571C67-B3BE-44E1-95F3-9CA5D391E43A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1571C67-B3BE-44E1-95F3-9CA5D391E43A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1571C67-B3BE-44E1-95F3-9CA5D391E43A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
