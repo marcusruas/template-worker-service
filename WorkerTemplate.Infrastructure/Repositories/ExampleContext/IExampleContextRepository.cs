@@ -7,6 +7,7 @@ namespace WorkerTemplate.Infrastructure.Repositories.ExampleContext
 {
     public interface IExampleContextRepository
     {
+        Task InsertMessageIntoDB(string message);
         Task TestConnection();
     }
 }

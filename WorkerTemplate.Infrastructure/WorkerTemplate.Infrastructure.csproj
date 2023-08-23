@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Repositories\ExampleContext\SQL\selectTestConnection.sql">
+    <None Update="Repositories\ExampleContext\SQL\*.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

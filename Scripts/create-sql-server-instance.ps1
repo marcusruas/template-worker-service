@@ -11,3 +11,10 @@ Write-Output "Starting container $CONTAINER_NAME"
 docker start $CONTAINER_NAME
 
 Write-Output "Container running."
+
+# CREATE TABLE WORKER_MESSAGES(
+#     ID UNIQUEIDENTIFIER,
+#     INSTANCE_NAME VARCHAR(100),
+#     MESSAGE VARCHAR(500),
+#     DATE DATETIME
+# )

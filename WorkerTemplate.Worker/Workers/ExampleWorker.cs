@@ -12,8 +12,21 @@ namespace WorkerTemplate.Worker.Workers
 
         protected override async Task ExecuteProcess(CancellationToken stoppingToken)
         {
+            await ExecuteQueryInDb();
+            await ProcessResultFromDb();
+
             await SendMessage<ExampleQueueHandler, ExampleContract>(new ExampleContract(), "RabbitMQ");
             Logger.LogInformation($"Worker running at: {DateTime.UtcNow}");
+        }
+
+        public Task ExecuteQueryInDb()
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task ProcessResultFromDb()
+        {
+            return Task.CompletedTask;
         }
     }
 }
