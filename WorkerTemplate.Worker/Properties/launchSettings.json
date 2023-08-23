@@ -3,10 +3,32 @@
     "WorkerTemplate": {
       "commandName": "Project",
       "environmentVariables": {
+        "INSTANCE_NAME": "Instance 3",
         "DOTNET_ENVIRONMENT": "Development"
       },
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5000"
+      "applicationUrl": "http://localhost:5000",
+      "dotnetRunMessages": true
+    },
+    "Instance1": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "INSTANCE_NAME": "Instance 1",
+        "DOTNET_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5001",
+      "dotnetRunMessages": true
+    },
+    "Instance2": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "INSTANCE_NAME": "Instance 2",
+        "DOTNET_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5002",
+      "dotnetRunMessages": true
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }
